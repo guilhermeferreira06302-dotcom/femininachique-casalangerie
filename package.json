@@ -1,0 +1,11 @@
+{
+  "name": "stitch-bio-links-moda-feminina",
+  "version": "1.0.0",
+  "description": "Landing page",
+  "scripts": {
+    "dev": "vite --host --open"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}
