@@ -73,12 +73,16 @@
                 
                 const baseLetters = baseH1.querySelectorAll('.letter');
                 const shineLetters = shineH1.querySelectorAll('.letter');
+                const containerWidth = baseH1.parentElement.offsetWidth || 1;
                 
                 baseLetters.forEach((letter, i) => {
-                    const delay = (i * 0.05) + 's';
-                    letter.style.animationDelay = delay;
+                    const L = letter.offsetLeft / containerWidth;
+                    const jumpDelay = (i * 0.05);
+                    const swingDelay = (1.5 * L) + 2.25;
+                    
+                    letter.style.animationDelay = `${jumpDelay}s, ${swingDelay}s`;
                     if(shineLetters[i]) {
-                        shineLetters[i].style.animationDelay = delay;
+                        shineLetters[i].style.animationDelay = `${jumpDelay}s, ${swingDelay}s`;
                     }
                 });
             }
@@ -86,28 +90,36 @@
     </script>
     <style>
         .shine-overlay {
-            color: transparent !important;
-            background: linear-gradient(60deg, rgba(255,255,255,0) 45%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 55%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            animation: shine-sweep 6s linear infinite;
+            color: rgba(255,255,255,0.9) !important;
+            -webkit-text-fill-color: rgba(255,255,255,0.9) !important;
+            -webkit-mask-image: linear-gradient(65deg, rgba(0,0,0,0) 45%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 55%);
+            -webkit-mask-size: 300% 100%;
+            -webkit-mask-repeat: no-repeat;
+            animation: shine-sweep 6s ease-in-out infinite !important;
         }
         .shine-overlay span {
-            color: transparent !important;
+            color: rgba(255,255,255,0.9) !important;
+            -webkit-text-fill-color: rgba(255,255,255,0.9) !important;
         }
         @keyframes shine-sweep {
-            0% { background-position: 200% center; }
-            100% { background-position: -200% center; }
+            0% { -webkit-mask-position: 150% 0; mask-position: 150% 0; }
+            100% { -webkit-mask-position: -50% 0; mask-position: -50% 0; }
+        }
+        @keyframes letter-swing {
+            0% { transform: translateX(0) skewX(0); }
+            5% { transform: translateX(12px) skewX(-10deg); }
+            10% { transform: translateX(-6px) skewX(5deg); }
+            15% { transform: translateX(3px) skewX(-2deg); }
+            20%, 100% { transform: translateX(0) skewX(0); }
         }
         @keyframes elastic-up {
-            0% { transform: translateY(150px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
+            0% { translate: 0 150px; opacity: 0; }
+            100% { translate: 0 0; opacity: 1; }
         }
         .letter {
             display: inline-block;
             opacity: 0;
-            animation: elastic-up 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: elastic-up 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, letter-swing 6s ease-in-out infinite;
         }
         .glass-panel {
             background: rgba(255, 255, 255, 0.85);
@@ -139,40 +151,61 @@
     <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden flex items-center min-h-[90vh]">
         <!-- Background Image -->
         <div class="absolute inset-0 z-0">
-            <img src="C:\Users\guilh\.gemini\antigravity-ide\brain\6086e9a6-9223-4f9e-8156-d3580d5a83e7\hero_image_1788229401138.png" alt="Hero Background" class="w-full h-full object-cover opacity-90">
+
             <div class="absolute inset-0 bg-gradient-to-r from-surface/95 via-surface/80 to-transparent"></div>
         </div>
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full flex flex-col items-center justify-center">
-            <div class="max-w-2xl mx-auto text-center">
+            <div class="w-full max-w-2xl mx-auto text-center">
                 <div class="relative w-full flex justify-center mb-6 z-10">
                     <h1 id="h1-base" class="font-headline text-[11vw] sm:text-7xl lg:text-8xl font-medium text-black leading-tight flex flex-col items-center">
-                        <span class="whitespace-nowrap">Feminina <span class="text-primary italic">Chique</span></span>
+                        <span class="whitespace-nowrap">Feminina <span class="text-primary italic font-semibold">Chique</span></span>
                         <span class="text-[6vw] sm:text-4xl text-black font-medium -my-1">&amp;</span>
-                        <span class="whitespace-nowrap"><span class="text-primary">Casa do</span> Langerie</span>
+                        <span class="whitespace-nowrap"><span class="text-[#92543B] font-semibold italic">Casa do</span> Langerie</span>
                     </h1>
-                    <h1 id="h1-shine" class="absolute top-0 font-headline text-[11vw] sm:text-7xl lg:text-8xl font-medium leading-tight flex flex-col items-center pointer-events-none select-none shine-overlay" aria-hidden="true">
-                        <span class="whitespace-nowrap">Feminina <span class="text-primary italic">Chique</span></span>
-                        <span class="text-[6vw] sm:text-4xl font-medium -my-1">&amp;</span>
-                        <span class="whitespace-nowrap"><span class="text-primary">Casa do</span> Langerie</span>
+                    <h1 id="h1-shine" class="absolute top-0 font-headline text-[11vw] sm:text-7xl lg:text-8xl font-medium leading-tight flex flex-col items-center pointer-events-none select-none shine-overlay z-50" aria-hidden="true">
+                        <span class="whitespace-nowrap">Feminina <span class="italic text-transparent font-semibold">Chique</span></span>
+                        <span class="text-[6vw] sm:text-4xl font-medium -my-1 text-transparent">&amp;</span>
+                        <span class="whitespace-nowrap"><span class="font-semibold text-transparent italic">Casa do</span> Langerie</span>
                     </h1>
                 </div>
-                <div class="flex flex-col sm:flex-row flex-wrap justify-center gap-4 animate-fade-in-up delay-300 mt-8 relative z-20">
+                <div class="flex flex-col items-center gap-5 animate-fade-in-up delay-300 mt-8 relative z-20 w-full">
                     <!-- Névoa para esconder as letras -->
                     <div class="absolute -top-8 left-1/2 -translate-x-1/2 w-[110%] max-w-5xl h-[300px] bg-gradient-to-t from-surface via-surface via-70% to-transparent opacity-100 -z-10 pointer-events-none" style="-webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);"></div>
                     
-                    <a href="#contato" class="inline-flex justify-center items-center gap-2 bg-primary text-on-primary px-12 py-4 rounded-full text-base font-bold tracking-wide hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 hover:-translate-y-1">
-                        Ver Mais
-                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                    </a>
-                    <a href="#contato" class="inline-flex justify-center items-center gap-2 bg-surface-container-lowest border border-outline-variant text-on-surface px-12 py-4 rounded-full text-base font-bold tracking-wide hover:border-primary hover:text-primary transition-all shadow-sm hover:shadow-md hover:-translate-y-1">
-                        <span class="material-symbols-outlined text-sm">chat</span>
-                        Fale com uma Consultora
-                    </a>
-                    <a href="#" class="inline-flex justify-center items-center gap-2 bg-surface-container-lowest border border-outline-variant text-on-surface px-12 py-4 rounded-full text-base font-bold tracking-wide hover:border-primary hover:text-primary transition-all shadow-sm hover:shadow-md hover:-translate-y-1">
-                        <span class="material-symbols-outlined text-sm">photo_camera</span>
-                        Instagram
-                    </a>
+                    <div class="flex flex-col w-full items-center gap-2">
+                        <span class="text-sm font-bold text-on-surface/70 tracking-widest uppercase w-[90vw] sm:w-[450px] text-center">Localização</span>
+                        <a href="https://maps.app.goo.gl/r2kRdH3XYBSe3kuv5" target="_blank" rel="noopener noreferrer" class="relative isolate overflow-hidden w-[90vw] sm:w-[450px] aspect-[3/1] flex justify-center items-center gap-2 text-on-primary rounded-3xl text-lg font-bold tracking-wide transition-all shadow-xl shadow-primary/20 hover:-translate-y-1 group">
+                            <!-- Background Image -->
+                            <img src="/mapa.png?v=3" alt="Mapa" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-110" />
+                            
+                            <!-- Pink Overlay at 50% Opacity -->
+                            <div class="absolute inset-0 z-0 bg-primary/50 group-hover:bg-primary/60 transition-colors duration-300"></div>
+                            
+                            <!-- Content -->
+                            <div class="relative z-10 flex items-center gap-2 text-on-primary drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                                Ver no Mapa
+                                <span class="material-symbols-outlined text-base">location_on</span>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="flex flex-col w-full items-center gap-2 mt-2">
+                        <span class="text-sm font-bold text-on-surface/70 tracking-widest uppercase w-[90vw] sm:w-[450px] text-center">Whatsapp:</span>
+                        <a href="https://wa.me/5521984893537?text=Oii%2C%20vim%20do%20instagram" target="_blank" rel="noopener noreferrer" class="relative isolate overflow-hidden w-[90vw] sm:w-[450px] aspect-[3/1] flex justify-center items-center gap-2 text-on-primary rounded-3xl text-lg font-bold tracking-wide transition-all shadow-xl shadow-primary/20 hover:-translate-y-1 group">
+                            <!-- Background Image -->
+                            <img src="/perfil_casa_do_langerie.png" alt="Perfil Casa do Langerie" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105" />
+
+                        </a>
+                    </div>
+
+                    <div class="flex flex-col w-full items-center gap-2 mt-2">
+                        <a href="https://wa.me/5521983476437?text=Oii%2C%20vim%20pelo%20instagram" target="_blank" rel="noopener noreferrer" class="relative isolate overflow-hidden w-[90vw] sm:w-[450px] aspect-[3/1] flex justify-center items-center gap-2 text-on-primary rounded-3xl text-lg font-bold tracking-wide transition-all shadow-xl shadow-primary/20 hover:-translate-y-1 group">
+                            <!-- Background Image -->
+                            <img src="/feminina_chique_perfil.png" alt="Perfil Feminina Chique" class="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105" />
+
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -180,86 +213,9 @@
 
 
 
-    <!-- Newsletter & Contato -->
-    <section id="contato" class="py-section bg-surface">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="bg-surface-container-lowest border border-outline-variant rounded-3xl p-10 lg:p-16 shadow-2xl shadow-primary/5">
-                <span class="material-symbols-outlined text-5xl text-primary mb-4">mail</span>
-                <h2 class="font-headline text-3xl lg:text-4xl font-medium text-on-surface mb-4">Faça parte do nosso VIP Club</h2>
-                <p class="text-on-surface-variant text-lg mb-8">Cadastre-se para receber acesso antecipado a novas coleções e descontos exclusivos.</p>
-                
-                <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
-                    <input type="email" placeholder="Seu melhor e-mail" class="flex-grow px-6 py-4 rounded-full border border-outline-variant bg-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
-                    <button type="button" class="bg-primary text-on-primary px-8 py-4 rounded-full font-bold uppercase tracking-wider hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 whitespace-nowrap">
-                        Assinar
-                    </button>
-                </form>
 
-                <div class="mt-12 pt-12 border-t border-outline-variant flex flex-col sm:flex-row items-center justify-center gap-6">
-                    <span class="text-on-surface-variant font-medium">Ou fale conosco agora:</span>
-                    <a href="#" class="inline-flex items-center gap-2 text-primary font-bold hover:text-primary/80 transition-colors">
-                        <span class="material-symbols-outlined">chat</span>
-                        WhatsApp (11) 99999-9999
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="bg-surface-container border-t border-outline-variant py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-8 h-8 rounded-full overflow-hidden border border-primary">
-                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrC68DX6CypUL-Na-QjIqapm255QcdG71RZP123wsPUdsCTxmLBG2qWIRh822w5PT8wJgAfyrdull637lZ5AwhWU-xuQFEiiOok5BMrti7bd466mW9wE-YVpaIJVzpnBqafbV7WLcGkkH6wquFRVCSMXjGL58XTFhbmrGi7Y83RnXxaAYcJ9KSunjBlzh7_fBRuY4OM3PiygVouTn8ks26HP74rKG_dEjPILZnM7w_WzPrPKtc9tPb" alt="Logo" class="w-full h-full object-cover">
-                        </div>
-                        <span class="font-headline text-xl font-semibold text-primary">Velvet &amp; Rose</span>
-                    </div>
-                    <p class="text-on-surface-variant max-w-sm mb-6">
-                        Elevando a confiança da mulher moderna através de um design autoral, sofisticado e atemporal.
-                    </p>
-                    <div class="flex gap-4">
-                        <a href="#" class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-primary hover:shadow-md transition-all">
-                            <span class="material-symbols-outlined">photo_camera</span>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-primary hover:shadow-md transition-all">
-                            <span class="material-symbols-outlined">play_circle</span>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:text-primary hover:shadow-md transition-all">
-                            <span class="material-symbols-outlined">push_pin</span>
-                        </a>
-                    </div>
-                </div>
-                
-                <div>
-                    <h4 class="font-bold text-on-surface mb-6 uppercase tracking-wider text-sm">Navegação</h4>
-                    <ul class="space-y-4">
-                        <li><a href="#" class="text-on-surface-variant hover:text-primary transition-colors">Todos os Produtos</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h4 class="font-bold text-on-surface mb-6 uppercase tracking-wider text-sm">Ajuda</h4>
-                    <ul class="space-y-4">
-                        <li><a href="#" class="text-on-surface-variant hover:text-primary transition-colors">FAQ</a></li>
-                        <li><a href="#" class="text-on-surface-variant hover:text-primary transition-colors">Trocas e Devoluções</a></li>
-                        <li><a href="#" class="text-on-surface-variant hover:text-primary transition-colors">Política de Privacidade</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="border-t border-outline-variant pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-sm text-on-surface-variant">
-                    © 2026 Velvet &amp; Rose. Todos os direitos reservados.
-                </p>
-                <div class="flex gap-4 text-sm text-on-surface-variant">
-                    CNPJ: 00.000.000/0001-00
-                </div>
-            </div>
-        </div>
-    </footer>
+
 
 </body>
 </html>
